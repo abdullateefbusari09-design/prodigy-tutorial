@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 64" fill="none">
+  <rect x="1" y="1" width="62" height="62" stroke="#806b3d"/>
+  <path d="M17 39h30l-3-6-3-15-8 8-7-8-2 15-7 6Z" stroke="#c8a75e" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M20 43h24M25 48h14" stroke="#c8a75e" stroke-width="1.5"/>
+  <text x="77" y="29" fill="#eee8da" font-family="DM Sans, sans-serif" font-size="14" font-weight="600" letter-spacing="2.4">THE PRODIGY</text>
+  <text x="78" y="47" fill="#a39b89" font-family="DM Sans, sans-serif" font-size="9" letter-spacing="4">TUTORIAL</text>
+</svg>

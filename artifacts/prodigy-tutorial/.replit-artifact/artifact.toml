@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "THE PRODIGY TUTORIAL"
+description = "A luxury, mobile-friendly examination and tutoring platform for students, approved tutors, and owners, with practice exams, timed tests, results, and tutor approval workflows."
+version = "1.0.0"
+id = "artifacts/prodigy-tutorial"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 25473
+
+[services.development]
+run = "pnpm --filter @workspace/prodigy-tutorial run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/prodigy-tutorial", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/prodigy-tutorial/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25473"
+BASE_PATH = "/"

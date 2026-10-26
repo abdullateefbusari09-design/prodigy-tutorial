@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&family=Space+Mono:wght@400;700&display=swap');
+@layer theme, base, clerk, components, utilities;
+@import 'tailwindcss';
+@import '@clerk/themes/shadcn.css';
+@import 'tw-animate-css';
+@plugin "@tailwindcss/typography";
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --font-sans: var(--app-font-sans);
+  --font-serif: var(--app-font-serif);
+  --font-mono: var(--app-font-mono);
+  --radius-lg: var(--radius);
+}
+
+:root {
+  color-scheme: dark;
+  --background: 42 12% 7%;
+  --foreground: 42 22% 91%;
+  --card: 40 10% 10%;
+  --card-foreground: 42 22% 91%;
+  --border: 40 8% 20%;
+  --input: 40 8% 20%;
+  --primary: 43 64% 58%;
+  --primary-foreground: 42 18% 9%;
+  --secondary: 40 8% 15%;
+  --secondary-foreground: 42 22% 91%;
+  --muted: 40 8% 15%;
+  --muted-foreground: 38 8% 61%;
+  --accent: 43 64% 58%;
+  --accent-foreground: 42 18% 9%;
+  --ring: 43 64% 58%;
+  --app-font-sans: 'DM Sans', sans-serif;
+  --app-font-serif: 'Playfair Display', serif;
+  --app-font-mono: 'Space Mono', monospace;
+  --radius: 0.75rem;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; min-width: 320px; background: hsl(var(--background)); color: hsl(var(--foreground)); font-family: var(--app-font-sans); }
+body::before { content: ''; pointer-events: none; position: fixed; inset: 0; z-index: 20; opacity: .07; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.3'/%3E%3C/svg%3E"); }
+button, a, input, select, textarea { font: inherit; }
+a { color: inherit; text-decoration: none; }
+button { cursor: pointer; }
+::selection { background: #c8a75e; color: #1d1a13; }
+
+.serif { font-family: var(--app-font-serif); }
+.mono { font-family: var(--app-font-mono); }
+.gold { color: #c8a75e; }
+.gold-rule { height: 1px; background: linear-gradient(90deg, #c8a75e, transparent); }
+.surface { background: #171612; border: 1px solid #302d25; }
+.surface-soft { background: #1d1b16; border: 1px solid #302d25; }
+.btn-primary { display:inline-flex; align-items:center; justify-content:center; gap:.55rem; background:#c8a75e; color:#1d1a13; padding:.8rem 1.15rem; border:1px solid #d3b875; border-radius:.45rem; font-weight:700; transition:transform .2s, opacity .2s; }
+.btn-primary:hover { transform:translateY(-2px); }
+.btn-primary:disabled { opacity:.45; cursor:not-allowed; transform:none; }
+.btn-outline { display:inline-flex; align-items:center; justify-content:center; gap:.5rem; border:1px solid #4a4435; color:#e9e1ce; background:transparent; padding:.75rem 1rem; border-radius:.45rem; transition:background .2s,border-color .2s; }
+.btn-outline:hover { background:#252219; border-color:#c8a75e; }
+.field { background:#11100d; border:1px solid #39362d; border-radius:.45rem; color:#ede8dc; width:100%; padding:.75rem .85rem; outline:none; }
+.field:focus { border-color:#c8a75e; box-shadow:0 0 0 2px #c8a75e22; }
+.field::placeholder { color:#777267; }
+.eyebrow { color:#c8a75e; font-family:var(--app-font-mono); text-transform:uppercase; letter-spacing:.16em; font-size:.67rem; }
+.animate-in { animation: rise .55s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes rise { from { opacity:0; transform:translateY(14px) } to { opacity:1; transform:translateY(0) } }
+@media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:.01ms!important; scroll-behavior:auto!important; transition-duration:.01ms!important; } }

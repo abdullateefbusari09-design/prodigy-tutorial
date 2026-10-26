@@ -10,6 +10,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: tutorial
+    description: Examination platform operations
 paths:
   /healthz:
     get:
@@ -24,6 +26,248 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /profile:
+    get:
+      operationId: getProfile
+      tags: [tutorial]
+      summary: Get the signed-in user's profile
+      responses:
+        "200":
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Profile"
+    post:
+      operationId: createProfile
+      tags: [tutorial]
+      summary: Create a student or tutor profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProfileInput"
+      responses:
+        "201":
+          description: Profile created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Profile"
+  /dashboard:
+    get:
+      operationId: getDashboard
+      tags: [tutorial]
+      summary: Get role-specific dashboard information
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+  /exams:
+    get:
+      operationId: listExams
+      tags: [tutorial]
+      summary: List published examinations
+      parameters:
+        - name: subject
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Examination list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ExamSummary"
+    post:
+      operationId: createExam
+      tags: [tutorial]
+      summary: Create an examination as an approved tutor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExamInput"
+      responses:
+        "201":
+          description: Examination created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exam"
+  /exams/{examId}:
+    get:
+      operationId: getExam
+      tags: [tutorial]
+      summary: Get an examination and its questions
+      parameters:
+        - name: examId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Examination
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exam"
+  /exams/{examId}/submit:
+    post:
+      operationId: submitExam
+      tags: [tutorial]
+      summary: Submit answers for an examination
+      parameters:
+        - name: examId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExamSubmissionInput"
+      responses:
+        "201":
+          description: Examination result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExamResult"
+  /exams/{examId}/start:
+    post:
+      operationId: startExam
+      tags: [tutorial]
+      summary: Start a timed examination attempt
+      parameters:
+        - name: examId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "201":
+          description: Timed examination attempt
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExamAttempt"
+  /results:
+    get:
+      operationId: listResults
+      tags: [tutorial]
+      summary: List the signed-in student's examination results
+      responses:
+        "200":
+          description: Result list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ExamResult"
+  /leaderboard:
+    get:
+      operationId: getLeaderboard
+      tags: [tutorial]
+      summary: Get the student leaderboard
+      responses:
+        "200":
+          description: Leaderboard entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LeaderboardEntry"
+  /owner/tutors:
+    get:
+      operationId: listTutorApplications
+      tags: [tutorial]
+      summary: List tutor applications for owner review
+      responses:
+        "200":
+          description: Tutor applications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Profile"
+  /owner/tutors/{userId}:
+    patch:
+      operationId: reviewTutorApplication
+      tags: [tutorial]
+      summary: Approve or reject a tutor application
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TutorReviewInput"
+      responses:
+        "200":
+          description: Reviewed tutor profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Profile"
+  /owner/users:
+    get:
+      operationId: listUsers
+      tags: [tutorial]
+      summary: List application users for owner management
+      responses:
+        "200":
+          description: Application users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Profile"
+  /owner/users/{userId}:
+    patch:
+      operationId: updateUserStatus
+      tags: [tutorial]
+      summary: Suspend or restore an application user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserStatusInput"
+      responses:
+        "200":
+          description: Updated application user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Profile"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +277,147 @@ components:
           type: string
       required:
         - status
+    Profile:
+      type: object
+      required: [userId, name, email, role, tutorStatus]
+      properties:
+        userId: { type: string }
+        name: { type: string }
+        email: { type: string }
+        role: { type: string, enum: [student, tutor, owner] }
+        tutorStatus: { type: string, enum: [not_applicable, pending, approved, rejected] }
+        accountStatus: { type: string, enum: [active, suspended] }
+        createdAt: { type: string, format: date-time }
+    ProfileInput:
+      type: object
+      required: [name, role]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 120 }
+        role: { type: string, enum: [student, tutor] }
+        qualifications: { type: string, maxLength: 2000 }
+    DashboardSummary:
+      type: object
+      required: [role, totalExams, completedExams, averageScore, recentResults, featuredExams]
+      properties:
+        role: { type: string, enum: [student, tutor, owner] }
+        totalExams: { type: integer }
+        completedExams: { type: integer }
+        averageScore: { type: number }
+        recentResults:
+          type: array
+          items: { $ref: "#/components/schemas/ExamResult" }
+        featuredExams:
+          type: array
+          items: { $ref: "#/components/schemas/ExamSummary" }
+    ExamSummary:
+      type: object
+      required: [id, title, subject, durationMinutes, questionCount, status]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        subject: { type: string }
+        durationMinutes: { type: integer }
+        questionCount: { type: integer }
+        status: { type: string, enum: [draft, published, archived] }
+        tutorName: { type: string }
+    Exam:
+      allOf:
+        - $ref: "#/components/schemas/ExamSummary"
+        - type: object
+          required: [questions]
+          properties:
+            questions:
+              type: array
+              items: { $ref: "#/components/schemas/Question" }
+    ExamInput:
+      type: object
+      required: [title, subject, durationMinutes, questions]
+      properties:
+        title: { type: string, minLength: 1, maxLength: 160 }
+        subject: { type: string, minLength: 1, maxLength: 80 }
+        durationMinutes: { type: integer, minimum: 1, maximum: 240 }
+        status: { type: string, enum: [draft, published] }
+        questions:
+          type: array
+          minItems: 1
+          items: { $ref: "#/components/schemas/QuestionInput" }
+    Question:
+      type: object
+      required: [id, prompt, type, options, points]
+      properties:
+        id: { type: string }
+        prompt: { type: string }
+        type: { type: string, enum: [multiple_choice, true_false, written] }
+        options:
+          type: array
+          items: { type: string }
+        points: { type: integer }
+    QuestionInput:
+      type: object
+      required: [prompt, type, points]
+      properties:
+        prompt: { type: string, minLength: 1 }
+        type: { type: string, enum: [multiple_choice, true_false, written] }
+        options:
+          type: array
+          items: { type: string }
+        correctAnswer: { type: string }
+        points: { type: integer, minimum: 1 }
+    ExamSubmissionInput:
+      type: object
+      required: [attemptId, answers]
+      properties:
+        attemptId: { type: string }
+        answers:
+          type: array
+          items: { $ref: "#/components/schemas/AnswerInput" }
+    ExamAttempt:
+      type: object
+      required: [attemptId, examId, durationMinutes, startedAt, expiresAt, questions]
+      properties:
+        attemptId: { type: string }
+        examId: { type: string }
+        durationMinutes: { type: integer }
+        startedAt: { type: string, format: date-time }
+        expiresAt: { type: string, format: date-time }
+        questions:
+          type: array
+          items: { $ref: "#/components/schemas/Question" }
+    AnswerInput:
+      type: object
+      required: [questionId, answer]
+      properties:
+        questionId: { type: string }
+        answer: { type: string }
+    ExamResult:
+      type: object
+      required: [id, examId, examTitle, subject, score, totalPoints, submittedAt]
+      properties:
+        id: { type: string }
+        examId: { type: string }
+        examTitle: { type: string }
+        subject: { type: string }
+        score: { type: number }
+        totalPoints: { type: number }
+        submittedAt: { type: string, format: date-time }
+        writtenAnswersPending: { type: boolean }
+    LeaderboardEntry:
+      type: object
+      required: [rank, userId, name, score, examsCompleted]
+      properties:
+        rank: { type: integer }
+        userId: { type: string }
+        name: { type: string }
+        score: { type: number }
+        examsCompleted: { type: integer }
+    TutorReviewInput:
+      type: object
+      required: [status]
+      properties:
+        status: { type: string, enum: [approved, rejected] }
+    UserStatusInput:
+      type: object
+      required: [accountStatus]
+      properties:
+        accountStatus: { type: string, enum: [active, suspended] }
 
