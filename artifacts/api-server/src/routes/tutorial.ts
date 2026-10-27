@@ -390,12 +390,31 @@ router.post("/exams/:examId/start", async (req, res): Promise<void> => {
     );
     return;
   }
-  if (openAttempt) {
+    if (openAttempt) {
     await db
       .update(examAttemptsTable)
       .set({ submittedAt: openAttempt.expiresAt })
       .where(eq(examAttemptsTable.id, openAttempt.id));
   }
+
+  const [previousResult] = await db
+    .select({ id: examResultsTable.id })
+    .from(examResultsTable)
+    .where(
+      and(
+        eq(examResultsTable.examId, exam.id),
+        eq(examResultsTable.studentUserId, profile.userId),
+      ),
+    )
+    .limit(1);
+
+  if (previousResult) {
+    res.status(409).json({
+      error: "You have already completed this examination.",
+    });
+    return;
+  }
+
   const startedAt = new Date();
   const expiresAt = new Date(startedAt.getTime() + exam.durationMinutes * 60_000);
   const [attempt] = await db
